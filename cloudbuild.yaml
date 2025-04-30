@@ -8,34 +8,10 @@ steps:
       '.' # Use the current directory (where Dockerfile is) as the build context
     ]
 
-  # Step 2: Push the Docker image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'Push image to Artifact Registry'
-    waitFor: ['Build Image'] # Make sure the build is done
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/my-python-app:latest']
-
-  # Step 3: Deploy to GKE
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'Rollout Restart GKE Deployment'
-    entrypoint: 'sh'
-    waitFor: ['Push image to Artifact Registry'] # CRITICAL: wait for the push to complete
-    args:
-      - '-c'
-      - |
-        echo "DEBUG: Configuring kubectl for GKE cluster..."
-        gcloud container clusters get-credentials my-gke-cluster \
-        --zone us-central1-a \
-        --project $PROJECT_ID
-        echo "DEBUG: get-credentials command finished. Exit code: $?" # Prints the exit code of the last command
-        
-        echo "DEBUG: Current kubectl config view:"
-        kubectl config view
-
-        echo "DEBUG: Current kubectl context:"
-        kubectl config current-context
-
-        echo "Attempting to rollout restart deployment: my-python-app-deployment..."
-        kubectl rollout restart deployment my-python-app-deployment --namespace default
-        echo "Rollout restart command issued."
+# The 'images' section tells Cloud Build to push these images to Artifact Registry 
+# after all steps above complete successfully.
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/my-python-app:latest'
+  
 options:
   logging: CLOUD_LOGGING_ONLY
