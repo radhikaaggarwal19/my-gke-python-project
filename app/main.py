@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Hello from my Python App on my GKE Cluster!"
+    return "My Python App on GKE has been updated via CI/CD!"
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
