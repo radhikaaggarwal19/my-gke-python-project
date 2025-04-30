@@ -1,0 +1,10 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker' # Uses the Docker builder provided by Google Cloud Build
+  args: [
+    'build',
+    '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/my-python-app:latest', # Tag as latest
+    '.' # Use the current directory (where Dockerfile is) as the build context
+  ]
+images:
+# List the images to be pushed to Artifact Registry
+- 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/my-python-app:latest'

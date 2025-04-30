@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-python-app-deployment
+  labels:
+    app: my-python-app # Label for the deployment itself
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-python-app # This selector finds Pods with this label
+  template: # This is the blueprint for the Pods
+    metadata:
+      labels:
+        app: my-python-app # Pods will have this label
+    spec:
+      containers:
+      - name: my-python-container
+        image: us-central1-docker.pkg.dev/thinking-prism-456318-j1/my-app-repo/my-python-app:latest
+        ports:
+        - containerPort: 8080 # The port your Flask app listens on (from app/main.py and Dockerfile)
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m" # 0.1 CPU
+          limits:
+            memory: "128Mi"
+            cpu: "250m" # 0.25 CPU
