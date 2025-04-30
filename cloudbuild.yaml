@@ -22,13 +22,20 @@ steps:
     args:
       - '-c'
       - |
-        echo "Configuring kubectl for GKE cluster..."
-        gcloud container clusters get-credentials my-gke-cluster ...
-        echo "Attempting to rollout restart deployment..."
-        kubectl rollout restart deployment my-python-app-deployment ...
-        echo "Rollout restart command issued to GKE."
-images:
-# List the images to be pushed to Artifact Registry
-- 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/my-python-app:latest'
+        echo "DEBUG: Configuring kubectl for GKE cluster..."
+        gcloud container clusters get-credentials my-gke-cluster \
+        --zone us-central1-a \
+        --project $PROJECT_ID
+        echo "DEBUG: get-credentials command finished. Exit code: $?" # Prints the exit code of the last command
+        
+        echo "DEBUG: Current kubectl config view:"
+        kubectl config view
+
+        echo "DEBUG: Current kubectl context:"
+        kubectl config current-context
+
+        echo "Attempting to rollout restart deployment: my-python-app-deployment..."
+        kubectl rollout restart deployment my-python-app-deployment --namespace default
+        echo "Rollout restart command issued."
 options:
   logging: CLOUD_LOGGING_ONLY
