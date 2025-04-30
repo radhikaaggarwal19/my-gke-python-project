@@ -8,3 +8,5 @@ steps:
 images:
 # List the images to be pushed to Artifact Registry
 - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/my-python-app:latest'
+options:
+  logging: CLOUD_LOGGING_ONLY
